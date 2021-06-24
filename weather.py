@@ -8,20 +8,19 @@ import numpy as np
 
 base_url = 'https://api.weather.gov'
 headers = {'user-agent': 'Alec Lovlein', 'from': 'alovlein@gmail.com'}
-lat, lon = 45.1219, -93.4000
 
 
 def get_coor(latitude, longitude):
     gridpoints = json.loads(requests.get(f'{base_url}/points/{latitude},{longitude}', headers=headers).text)
 
-    with open('weather_dir/gridpoints.json', 'w', encoding='utf-8') as f:
+    with open('data/gridpoints.json', 'w', encoding='utf-8') as f:
         json.dump(gridpoints, f)
 
 
 def get_forecast(frequency):
     assert frequency in ('hourly', 'daily')
 
-    with open('weather_dir/gridpoints.json') as f:
+    with open('data/gridpoints.json') as f:
         gridpoints = json.load(f)
     
     if frequency == 'hourly':
@@ -32,20 +31,20 @@ def get_forecast(frequency):
     forecast = json.loads(requests.get(forecast_url, headers=headers).text)
     
     if frequency == 'hourly':
-        with open('weather_dir/forecast_hourly.json', 'w', encoding='utf-8') as f:
+        with open('data/forecast_hourly.json', 'w', encoding='utf-8') as f:
             json.dump(forecast, f)
     else:
-        with open('weather_dir/forecast_daily.json', 'w', encoding='utf-8') as f:
+        with open('data/forecast_daily.json', 'w', encoding='utf-8') as f:
             json.dump(forecast, f)
 
 
 def save_forecast(frequency):
     assert frequency in ('hourly', 'daily')
 
-    with open(f'weather_dir/forecast_{frequency}.json') as f:
+    with open(f'data/forecast_{frequency}.json') as f:
         raw_forecast = json.load(f)['properties']['periods']
 
-    conn = sqlite3.connect('external.db')
+    conn = sqlite3.connect('data/external.db')
     cur = conn.cursor()
 
     if frequency == 'hourly':
@@ -135,7 +134,7 @@ def convert_short_forecast(forecast_text):
 def read_forecasts(frequency):
     assert frequency in ('hourly', 'daily')
 
-    conn = sqlite3.connect('external.db')
+    conn = sqlite3.connect('data/external.db')
 
     forecast_data = pd.read_sql(f'select * from forecasts_{frequency}', conn)
     print(forecast_data)
