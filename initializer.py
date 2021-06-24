@@ -1,6 +1,9 @@
 import sqlite3
+from pathlib import Path
 
-conn = sqlite3.connect('external.db')
+
+Path('data/').mkdir(exist_ok=True)
+conn = sqlite3.connect('data/external.db')
 cur = conn.cursor()
 
 cur.execute('create table forecasts_hourly (query_date, forecast_date, icon, temperature, wind_speed, wind_west, wind_north, sunlight)')
@@ -9,7 +12,7 @@ cur.execute('create table forecasts_daily (query_date, forecast_date, icon, prec
 conn.commit()
 conn.close()
 
-conn = sqlite3.connect('internal.db')
+conn = sqlite3.connect('data/internal.db')
 cur = conn.cursor()
 
 cur.execute('create table measurements (date, temperature, sunlight, humidity, moisture, precipitation)')
