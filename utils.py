@@ -143,3 +143,14 @@ def read_forecasts(frequency):
     conn.close()
 
 
+def read_measurements():
+    conn = sqlite3.connect('data/internal.db')
+
+    measurement_data = pd.read_sql('select * from measurements', conn)
+    print(measurement_data)
+
+    conn.commit()
+    conn.close()
+
+
+
