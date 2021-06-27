@@ -17,6 +17,28 @@ def get_coor(latitude, longitude):
         json.dump(gridpoints, f)
 
 
+def ingest_measurement(meas_dict):
+    conn = sqlite3.connect('data/internal.db')
+    cur = conn.cursor()
+    
+    split_temp = meas_dict['Temperature'].strip().split(' ')
+    temp_value, temp_unit = float(split_temp[0]), split_temp[1]
+    cur.execute('insert into measurements values (?, ?, ?, ?, ?, ?)', [meas_dict['date_read'], convert_temp(temp_value, temp_unit), meas_dict['Light level'],\
+            meas_dict['Humidity'].strip().split(' ')[0], meas_dict['Soil moisture'], meas_dict['Water']])
+    
+    conn.commit()
+    conn.close()
+
+
+def ingest_forecast(latitude, longitude, frequency, overwrite=False):
+    assert frequency in ('hourly', 'daily')
+    if not os.path.isfile('data/gridpoints.json') or overwrite:
+        get_coor(latitude, longitude)
+
+    get_forecast(frequency)
+    save_forecast(frequency)
+
+
 def get_forecast(frequency):
     assert frequency in ('hourly', 'daily')
 
@@ -151,6 +173,7 @@ def read_measurements():
 
     conn.commit()
     conn.close()
+
 
 
 
