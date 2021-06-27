@@ -1,4 +1,4 @@
-import weather
+import utils
 import os
 
 
@@ -8,10 +8,10 @@ def get_fresh_forecast(latitude, longitude, frequency, overwrite=False):
     if os.path.isfile('data/gridpoints.json') and not overwrite:
         print('using stored gridpoints, if overwrite is needed re-run with overwrite=True')
     else:
-        weather.get_coor(latitude, longitude)
+        utils.get_coor(latitude, longitude)
 
-    weather.get_forecast(frequency)
-    weather.save_forecast(frequency)
+    utils.get_forecast(frequency)
+    utils.save_forecast(frequency)
 
 get_fresh_forecast(lat, lon, 'hourly')
 get_fresh_forecast(lat, lon, 'daily')

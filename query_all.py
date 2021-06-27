@@ -1,4 +1,5 @@
-import weather
+import utils
 
-print(weather.read_forecasts('daily'))
+print(utils.read_forecasts('daily'))
+print(utils.read_measurements())
 
