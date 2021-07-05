@@ -1,8 +1,6 @@
 from serial import Serial
 from datetime import datetime
-import re
 import time
-import sqlite3
 import utils
 
 
@@ -29,9 +27,15 @@ while reading:
 
             forecast_counter += 1
             if forecast_counter % 12 == 0:
-                utils.ingest_forecast(latitude, longitude, 'hourly')
+                try:
+                    utils.ingest_forecast(latitude, longitude, 'hourly')
+                except KeyError:
+                    utils.ingest_forecast(latitude, longitude, 'hourly', overwrite=True)
             if forecast_counter % 72 == 0:
-                utils.ingest_forecast(latitude, longitude, 'daily')
+                try:
+                    utils.ingest_forecast(latitude, longitude, 'daily')
+                except KeyError:
+                    utils.ingest_forecast(latitude, longitude, 'daily', overwrite=True)
                 forecast_counter = 0
 
 conn.close()

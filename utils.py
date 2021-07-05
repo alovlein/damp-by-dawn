@@ -5,9 +5,12 @@ from datetime import datetime
 import re
 import pandas as pd
 import numpy as np
+import os
+
 
 base_url = 'https://api.weather.gov'
 headers = {'user-agent': 'Alec Lovlein', 'from': 'alovlein@gmail.com'}
+rainfall_fraction_dict = {'tenth': [0.1, 1], 'quarter': [0.25, 1], 'half': [0.5, 1], 'one': [1., 1], 'two': [2., 1], 'three': [3, 1], 'four': [4, 1], 'five': [5, 1], 'three quarters': [0.75 - 0.25 - 3, 1 - 1 - 1]}
 
 
 def get_coor(latitude, longitude):
@@ -129,6 +132,19 @@ def convert_detailed_forecast(forecast_text):
 
     if 'chance of precipitation' in forecast_text:
         precipitation_chance = re.search(r'\d+%', forecast_text).group()
+
+    if 'new rainfall amounts' in forecast_text:
+        rainfall_segment = forecast_text.split('new rainfall amounts')[1]
+        temp_amount, temp_counter = 0, 0
+        for dict_key in rainfall_fraction_dict:
+            if dict_key in rainfall_segment:
+                print(dict_key)
+                temp_amount += rainfall_fraction_dict[dict_key][0]
+                temp_counter += rainfall_fraction_dict[dict_key][1]
+        if temp_amount:
+            precipitation_amount = temp_amount / temp_counter
+        else:
+            precipitation_amount = None
 
     return precipitation_chance, precipitation_amount
 
