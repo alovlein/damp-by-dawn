@@ -1,9 +1,9 @@
 {% if sensor_statuses %}
     <ul>
     {% for sensor in sensor_statuses %}
-    <li><a href="{% url 'main:sensor_status' sensor.name %}">{{ sensor.name }}: {{ sensor.read_value }}</a></li>
+    <li><a href="{% url 'main:sensor_history' sensor.name %}">{{ sensor.name }}: {{ sensor.read_value }}</a></li>
     {% endfor %}
     </ul>
 {% else %}
-    <p>No sensors are available.</p>
+    <p>Sensor not available.</p>
 {% endif %}
