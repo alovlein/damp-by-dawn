@@ -2,7 +2,7 @@ from django.db import models
 
 
 class Measurements(models.Model):
-    pk_id = models.IntegerField(primary_key=True)
+    prim_key = models.TextField(primary_key=True)
     sensor_id = models.CharField(max_length=32, default='')
     measurement_date = models.TextField(default='', blank=True, null=True)
     temperature = models.FloatField()
@@ -17,7 +17,7 @@ class Measurements(models.Model):
 
 
 class ForecastsDaily(models.Model):
-    pk_id = models.IntegerField(primary_key=True)
+    prim_key = models.TextField(primary_key=True)
     query_date = models.TextField(default='', blank=True, null=True)
     forecast_date = models.TextField(default='', blank=True, null=True)
     icon = models.TextField(default='', blank=True, null=True)
@@ -30,7 +30,7 @@ class ForecastsDaily(models.Model):
 
 
 class ForecastsHourly(models.Model):
-    pk_id = models.IntegerField(primary_key=True)
+    prim_key = models.TextField(primary_key=True)
     query_date = models.TextField(default='', blank=True, null=True)
     forecast_date = models.TextField(default='', blank=True, null=True)
     icon = models.TextField(default='', blank=True, null=True)
