@@ -26,7 +26,7 @@ def ingest_measurement(meas_dict):
     
     split_temp = meas_dict['Temperature'].strip().split(' ')
     temp_value, temp_unit = float(split_temp[0]), split_temp[1]
-    cur.execute('insert into measurements values (?, ?, ?, ?, ?, ?, ?, ?)', [None, meas_dict['sid'], meas_dict['date_read'], convert_temp(temp_value, temp_unit), meas_dict['Light level'],\
+    cur.execute('insert into measurements values (?, ?, ?, ?, ?, ?, ?, ?)', [f'{meas_dict["sid"]}_{meas_dict["date_read"]}', meas_dict['sid'], meas_dict['date_read'], convert_temp(temp_value, temp_unit), meas_dict['Light level'],\
             meas_dict['Humidity'].strip().split(' ')[0], meas_dict['Soil moisture'], meas_dict['Water']])
     
     conn.commit()
@@ -75,7 +75,7 @@ def save_forecast(frequency):
     if frequency == 'hourly':
         for period_data in raw_forecast:
             wind_west, wind_north, wind_speed = convert_wind(period_data['windDirection'], period_data['windSpeed'])
-            row = [None, datetime.today().strftime('%Y-%m-%d-%H:%M:%S'), convert_time(period_data['startTime']), period_data['icon'],\
+            row = [f'{datetime.today()}_{period_data["startTime"]}', datetime.today().strftime('%Y-%m-%d-%H:%M:%S'), convert_time(period_data['startTime']), period_data['icon'],\
                     convert_temp(period_data['temperature'], period_data['temperatureUnit']), wind_speed, wind_west, wind_north,\
                     convert_short_forecast(period_data['shortForecast'])]
             cur.execute('insert into forecasts_hourly values (?, ?, ?, ?, ?, ?, ?, ?, ?)', row)
@@ -83,7 +83,7 @@ def save_forecast(frequency):
     else:
         for period_data in raw_forecast:
             precip_chance, precip_amt = convert_detailed_forecast(period_data['detailedForecast'])
-            row = [None, datetime.today().strftime('%Y-%m-%d-%H:%M:%S'), convert_time(period_data['startTime']), period_data['icon'], precip_chance, precip_amt]
+            row = [f'{datetime.today}_{period_data["startTime"]}', datetime.today().strftime('%Y-%m-%d-%H:%M:%S'), convert_time(period_data['startTime']), period_data['icon'], precip_chance, precip_amt]
             cur.execute('insert into forecasts_daily values (?, ?, ?, ?, ?, ?)', row)
         conn.commit()
     
