@@ -1,20 +1,47 @@
 from django.db import models
 
 
-class Sensors(models.Model):
-    
-    name = models.CharField(max_length=32)
-    relative_coor_north = models.FloatField()
-    relative_coor_west = models.FloatField()
-    read_date = models.DateTimeField()
-    read_value = models.FloatField()
-
+class Measurements(models.Model):
+    pk_id = models.IntegerField(primary_key=True)
+    sensor_id = models.CharField(max_length=32, default='')
+    measurement_date = models.TextField(default='', blank=True, null=True)
+    temperature = models.FloatField()
+    sunlight = models.FloatField()
+    humidity = models.FloatField()
+    moisture = models.FloatField()
+    precipitation = models.FloatField()
 
     class Meta:
-        ordering = ['-name']
+        managed = False
+        db_table = 'measurements'
 
 
-    def __str__(self):
-        return self.name
+class ForecastsDaily(models.Model):
+    pk_id = models.IntegerField(primary_key=True)
+    query_date = models.TextField(default='', blank=True, null=True)
+    forecast_date = models.TextField(default='', blank=True, null=True)
+    icon = models.TextField(default='', blank=True, null=True)
+    precipitation_chance = models.TextField(default='', blank=True, null=True)
+    precipitation_amount = models.TextField(default='', blank=True, null=True)
+
+    class Meta:
+        managed = False
+        db_table = 'forecasts_daily'
+
+
+class ForecastsHourly(models.Model):
+    pk_id = models.IntegerField(primary_key=True)
+    query_date = models.TextField(default='', blank=True, null=True)
+    forecast_date = models.TextField(default='', blank=True, null=True)
+    icon = models.TextField(default='', blank=True, null=True)
+    temperature = models.FloatField()
+    wind_speed = models.FloatField()
+    wind_west = models.IntegerField()
+    wind_north = models.IntegerField()
+    sunlight = models.FloatField()
+
+    class Meta:
+        managed = False
+        db_table = 'forecasts_hourly'
 
 

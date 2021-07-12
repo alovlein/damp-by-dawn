@@ -26,7 +26,7 @@ def ingest_measurement(meas_dict):
     
     split_temp = meas_dict['Temperature'].strip().split(' ')
     temp_value, temp_unit = float(split_temp[0]), split_temp[1]
-    cur.execute('insert into measurements values (?, ?, ?, ?, ?, ?)', [meas_dict['date_read'], convert_temp(temp_value, temp_unit), meas_dict['Light level'],\
+    cur.execute('insert into measurements values (?, ?, ?, ?, ?, ?, ?, ?)', [None, meas_dict['sid'], meas_dict['date_read'], convert_temp(temp_value, temp_unit), meas_dict['Light level'],\
             meas_dict['Humidity'].strip().split(' ')[0], meas_dict['Soil moisture'], meas_dict['Water']])
     
     conn.commit()
@@ -75,16 +75,16 @@ def save_forecast(frequency):
     if frequency == 'hourly':
         for period_data in raw_forecast:
             wind_west, wind_north, wind_speed = convert_wind(period_data['windDirection'], period_data['windSpeed'])
-            row = [datetime.today().strftime('%Y-%m-%d-%H:%M:%S'), convert_time(period_data['startTime']), period_data['icon'],\
+            row = [None, datetime.today().strftime('%Y-%m-%d-%H:%M:%S'), convert_time(period_data['startTime']), period_data['icon'],\
                     convert_temp(period_data['temperature'], period_data['temperatureUnit']), wind_speed, wind_west, wind_north,\
                     convert_short_forecast(period_data['shortForecast'])]
-            cur.execute('insert into forecasts_hourly values (?, ?, ?, ?, ?, ?, ?, ?)', row)
+            cur.execute('insert into forecasts_hourly values (?, ?, ?, ?, ?, ?, ?, ?, ?)', row)
         conn.commit()
     else:
         for period_data in raw_forecast:
             precip_chance, precip_amt = convert_detailed_forecast(period_data['detailedForecast'])
-            row = [datetime.today().strftime('%Y-%m-%d-%H:%M:%S'), convert_time(period_data['startTime']), period_data['icon'], precip_chance, precip_amt]
-            cur.execute('insert into forecasts_daily values (?, ?, ?, ?, ?)', row)
+            row = [None, datetime.today().strftime('%Y-%m-%d-%H:%M:%S'), convert_time(period_data['startTime']), period_data['icon'], precip_chance, precip_amt]
+            cur.execute('insert into forecasts_daily values (?, ?, ?, ?, ?, ?)', row)
         conn.commit()
     
     conn.close()
@@ -138,7 +138,6 @@ def convert_detailed_forecast(forecast_text):
         temp_amount, temp_counter = 0, 0
         for dict_key in rainfall_fraction_dict:
             if dict_key in rainfall_segment:
-                print(dict_key)
                 temp_amount += rainfall_fraction_dict[dict_key][0]
                 temp_counter += rainfall_fraction_dict[dict_key][1]
         if temp_amount:
@@ -157,7 +156,7 @@ def convert_short_forecast(forecast_text):
         sunlight = 5
     elif 'mostly sunny' in forecast_text:
         sunlight = 4
-    elif 'partly sunnyy' in forecast_text:
+    elif 'partly sunny' in forecast_text:
         sunlight = 3
     elif 'partly cloudy' in forecast_text:
         sunlight = 2
@@ -175,21 +174,22 @@ def read_forecasts(frequency):
     conn = sqlite3.connect('data/external.db')
 
     forecast_data = pd.read_sql(f'select * from forecasts_{frequency}', conn)
-    print(forecast_data)
 
     conn.commit()
     conn.close()
+
+    return forecast_data
+
 
 
 def read_measurements():
     conn = sqlite3.connect('data/internal.db')
 
     measurement_data = pd.read_sql('select * from measurements', conn)
-    print(measurement_data)
 
     conn.commit()
     conn.close()
 
-
+    return measurement_data
 
 
