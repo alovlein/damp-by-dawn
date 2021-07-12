@@ -18,6 +18,7 @@ while reading:
     if line:
         time.sleep(0.33)
         date_read = datetime.today().strftime('%Y-%m-%d-%H:%M')
+        measurement_dict['sid'] = 's1'
         measurement_dict['date_read'] = date_read
         measurement = line.decode().split(':')
         if len(measurement) > 1:
@@ -30,12 +31,22 @@ while reading:
                 try:
                     utils.ingest_forecast(latitude, longitude, 'hourly')
                 except KeyError:
-                    utils.ingest_forecast(latitude, longitude, 'hourly', overwrite=True)
+                    try:
+                        utils.ingest_forecast(latitude, longitude, 'hourly', overwrite=True)
+                    except Exception as e:
+                        print(e)
+                        print('Continuing without updating forecasts.')
+
             if forecast_counter % 72 == 0:
                 try:
                     utils.ingest_forecast(latitude, longitude, 'daily')
                 except KeyError:
-                    utils.ingest_forecast(latitude, longitude, 'daily', overwrite=True)
+                    try:
+                        utils.ingest_forecast(latitude, longitude, 'daily', overwrite=True)
+                    except Exception as e:
+                        print(e)
+                        print('Continuing without updating forecasts.')
+
                 forecast_counter = 0
 
 conn.close()

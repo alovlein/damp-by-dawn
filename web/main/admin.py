@@ -1,5 +1,7 @@
 from django.contrib import admin
-from .models import Sensors
+from .models import Measurements, ForecastsDaily, ForecastsHourly 
 
-admin.site.register(Sensors)
+admin.site.register(Measurements)
+admin.site.register(ForecastsDaily)
+admin.site.register(ForecastsHourly)
 

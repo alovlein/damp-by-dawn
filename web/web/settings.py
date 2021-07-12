@@ -14,7 +14,7 @@ from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
+PARENT_DIR = BASE_DIR.parent
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
@@ -81,7 +81,17 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',
-    }
+    },
+
+    'internal_data': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': PARENT_DIR / 'data/internal.db',
+    },
+
+    'external_data': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': PARENT_DIR / 'data/external.db',
+    },
 }
 
 
